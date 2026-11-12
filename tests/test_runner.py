@@ -231,8 +231,14 @@ class RunnerTests(Base):
         self.server.uid = os.geteuid() + 1
         s = socket.socket(socket.AF_UNIX)
         s.connect(self.sock)
-        s.sendall(b'{"op":"status"}\n')
-        self.assertEqual(s.recv(100), b"")
+        # The runner hangs up without reading. Depending on who is faster that
+        # shows as a clean end or as a reset; what matters is: no answer.
+        try:
+            s.sendall(b'{"op":"status"}\n')
+            answer = s.recv(100)
+        except (ConnectionResetError, BrokenPipeError):
+            answer = b""
+        self.assertEqual(answer, b"")
         s.close()
         with self.assertRaises(runner.Unreachable):
             self.call({"op": "status"})
