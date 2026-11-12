@@ -23,4 +23,16 @@ jobs:
         with:
           node-version: "20"
       - name: Run tests
-        run: python -m unittest discover -s tests
+        shell: bash
+        run: |
+          set -o pipefail
+          python -m unittest discover -s tests 2>&1 | tee test.log
+      - name: Show what failed
+        if: failure()
+        shell: bash
+        run: |
+          # Puts the failure report on the run's summary page as an annotation.
+          report=$(sed -n '/^=====/,$p' test.log | head -c 8000)
+          report=${report//'%'/'%25'}
+          report=${report//$'\n'/'%0A'}
+          echo "::error title=Failing tests::${report:-no failure report in test.log}"
