@@ -105,13 +105,15 @@ Inventar und Karten beschreiben einen bestimmten Pi. Sie liegen in
    oben. Dauerbetrieb als Dienst mit Zeitplan: siehe `systemd/`.
 3. **Aktionen** (gebaut): Anmeldung, Aktionen in den drei Stufen über
    `pihub runner`, Stummschalten von Befunden, Verlauf, Linien zwischen den
-   Karten. Die Seite wurde ohne Browser mit einem Rauchtest geprüft
-   (`tests/page_smoke.mjs`); Aussehen und Bedienung sind noch im Browser
-   abzunehmen.
+   Karten. Die Seite hat einen Rauchtest ohne Browser
+   (`tests/page_smoke.mjs`); Aussehen und Bedienung sind im Browser
+   abgenommen.
 4. **Für andere** (gebaut): Claude-Code-Plugin (`.claude-plugin/`) mit den
    Skills `/pihub:setup` (Ersteinrichtung) und `/pihub:update`, dazu
-   `docs/writing-cards.md`, `SECURITY.md` und ein Testlauf auf GitHub. Noch
-   offen: ein Durchlauf auf einem frischen Pi, auf dem PiHub nie lief.
+   `docs/writing-cards.md`, `SECURITY.md` und ein Testlauf auf GitHub.
+   `/pihub:update` ist mit installiertem Plugin gelaufen. Noch offen: ein
+   Durchlauf von `/pihub:setup` auf einem frischen Pi, auf dem PiHub nie
+   lief.
 
 ## Woher die Ideen kommen
 
