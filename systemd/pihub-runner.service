@@ -1,0 +1,23 @@
+[Unit]
+Description=PiHub runner (runs the actions of the cards)
+After=network.target
+
+[Service]
+User=@USER@
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 @REPO@/bin/pihub --data @DATA@ runner
+Restart=on-failure
+RestartSec=5
+# /run/pihub/runner.sock, reachable by this user only.
+RuntimeDirectory=pihub
+RuntimeDirectoryMode=0700
+
+# Deliberately NOT locked down: the actions on the cards need sudo, and a
+# locked-down process cannot give it. That is why this is the only part of
+# PiHub that runs actions (the web page, locked down, has no such right), why
+# it needs a password, and why it runs only the commands written on the cards
+# in the data folder. Whoever can write there, or knows the password, can run
+# commands with the rights of this user.
+
+[Install]
+WantedBy=multi-user.target

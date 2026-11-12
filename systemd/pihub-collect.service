@@ -1,0 +1,12 @@
+[Unit]
+Description=PiHub: read the machine and run the checks on the cards
+
+[Service]
+Type=oneshot
+User=@USER@
+Environment=PYTHONDONTWRITEBYTECODE=1
+# The only part of PiHub that runs commands: the scan and the `checks`
+# listed on the cards. It needs sudo for ss, ufw and cscli.
+ExecStart=/usr/bin/python3 @REPO@/bin/pihub --data @DATA@ collect
+Nice=10
+TimeoutStartSec=180

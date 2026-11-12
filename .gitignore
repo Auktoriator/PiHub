@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+# Instance data never lives in this repository. It belongs in ~/pihub-data
+# (or $PIHUB_DATA). These lines are a second guard, not the mechanism.
+/inventory.json
+/pihub-data/

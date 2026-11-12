@@ -1,0 +1,36 @@
+schema = 1
+id = "backup-disk"
+name = "Backup disk"
+area = "home"
+summary = "The only copy of the photos and house data"
+about = "A disk that holds the copies of everything that cannot be recreated. If it fails, the copies are gone."
+units = ["backup.timer"]
+
+[[checks]]
+label = "Last backup"
+run = "cat /srv/backup/last-run.txt"
+show = true
+blind_spot = "whether the copy can be restored"
+
+[[steps]]
+text = "Is the disk mounted?"
+run = "findmnt /srv/backup"
+
+[[actions]]
+label = "Mount the disk"
+run = "sudo mount -- {value}"
+level = "change"
+choose = "unmounted_targets"
+effect = "The disk appears under its folder again. Nothing is written."
+
+[[actions]]
+label = "Start a backup now"
+run = "sudo systemctl start backup.service"
+level = "change"
+timeout = 1800
+effect = "The machine works harder for a while; pages may answer slowly."
+
+[[places]]
+path = "/srv/backup"
+what = "The copies"
+caution = "Never rotate, clean up or copy these files elsewhere without asking who needs them"

@@ -1,0 +1,39 @@
+schema = 1
+id = "heating"
+name = "Heating controller"
+area = "home"
+summary = "Switches the heating by schedule and room sensors"
+about = "Reads the room sensors and turns the heating on and off by a weekly schedule. During the holidays it can be switched off on purpose."
+units = ["heating.service", "heating.timer"]
+switch = "holiday.target"
+
+[[ports]]
+port = 1883
+reach = ["local"]
+why = "The message bus between the sensors and the controller. Nothing outside this machine needs it."
+
+[[ports]]
+port = 5683
+proto = "udp"
+reach = ["lan"]
+why = "The sensors report here over the home network."
+
+[[checks]]
+label = "A reading arrived in the last ten minutes"
+run = "find /var/lib/heating/last-reading -mmin -10 | grep -q ."
+blind_spot = "whether the reading is plausible"
+
+[[steps]]
+text = "Check that the controller itself is running."
+run = "systemctl status heating --no-pager"
+
+[[actions]]
+label = "Show the schedule"
+run = "cat /etc/heating/schedule.conf"
+level = "read"
+
+[[actions]]
+label = "Switch the heating off for good"
+run = "sudo systemctl disable --now heating.timer"
+level = "copy"
+effect = "The house stays cold until the timer is enabled again. Only for copying, PiHub never runs it."

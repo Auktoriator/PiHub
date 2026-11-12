@@ -1,0 +1,24 @@
+schema = 1
+id = "intruder-guard"
+name = "Intruder guard"
+area = "network"
+summary = "Locks out addresses that keep trying doors"
+about = "Watches the logs for repeated failed logins and locks the sender out for a while. A locked-out address is not a sign of damage, only of someone knocking."
+units = ["guard.service"]
+
+[[checks]]
+label = "Guard is running"
+run = "systemctl is-active guard"
+expect = "^active"
+
+[[steps]]
+text = "List who is locked out right now."
+run = "sudo guardctl list"
+
+[[actions]]
+label = "Unlock an address"
+run = "sudo guardctl unblock -- {value}"
+level = "change"
+choose = "blocked_addresses"
+timeout = 30
+effect = "The address may connect again. If it keeps attacking, it is locked out again."

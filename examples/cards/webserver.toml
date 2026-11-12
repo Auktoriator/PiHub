@@ -1,0 +1,64 @@
+# The card that shows most keys of the format. Everything here is invented:
+# change units, ports and commands to what runs on your machine.
+schema = 1
+id = "webserver"
+name = "Web server"
+area = "network"
+summary = "Hands web requests to the right service"
+about = "Takes every web request and passes it on. When it is down, every page behind it is gone at once, although those services still run."
+units = ["nginx.service"]
+
+# Who is meant to get in, per port. `check` and the Security page compare this
+# with what really listens and what the firewall lets in.
+[[ports]]
+port = 443
+reach = ["internet"]
+why = "The public site. The router forwards this port to this machine."
+
+[[ports]]
+port = 80
+reach = ["lan", "internet"]
+why = "Only redirects to port 443 and answers the certificate authority."
+
+[[links]]
+label = "Test page"
+scheme = "https"
+port = 443
+path = "/status"
+note = "Opens on the name you used to open PiHub"
+
+# Passing means exit code 0. `expect` also wants this text in the output.
+[[checks]]
+label = "Service is running"
+run = "systemctl is-active nginx"
+expect = "^active"
+blind_spot = "whether the pages behind it answer"
+
+[[checks]]
+label = "Configuration is valid"
+run = "sudo nginx -t 2>&1 | tail -n 1"
+show = true
+blind_spot = "whether the running server already uses it"
+
+[[steps]]
+text = "Test the configuration. This changes nothing."
+run = "sudo nginx -t"
+
+[[steps]]
+text = "If the test names a line, fix that line and test again before reloading."
+
+[[actions]]
+label = "Test the configuration"
+run = "sudo nginx -t"
+level = "read"
+
+[[actions]]
+label = "Reload"
+run = "sudo systemctl reload nginx"
+level = "change"
+effect = "No interruption. The first answers afterwards may still come from the old state."
+
+[[places]]
+path = "/etc/nginx/sites-enabled"
+what = "The sites that are switched on"
+caution = "A wrong line here takes every site down at the next reload"

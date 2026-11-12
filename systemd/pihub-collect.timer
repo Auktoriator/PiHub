@@ -1,0 +1,10 @@
+[Unit]
+Description=PiHub: refresh the state every five minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+AccuracySec=30s
+
+[Install]
+WantedBy=timers.target

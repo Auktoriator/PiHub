@@ -1,0 +1,18 @@
+{
+  "name": "pihub",
+  "owner": {
+    "name": "Auktoriator",
+    "url": "https://github.com/Auktoriator"
+  },
+  "metadata": {
+    "description": "PiHub: a self-explaining command centre for a Raspberry Pi home server."
+  },
+  "plugins": [
+    {
+      "name": "pihub",
+      "source": "./",
+      "description": "Set up PiHub on your Raspberry Pi: scan the machine, let Claude Code write one plain-language card per service, and run a small web page that explains the machine without AI.",
+      "category": "productivity"
+    }
+  ]
+}

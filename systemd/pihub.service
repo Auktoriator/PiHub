@@ -1,0 +1,47 @@
+[Unit]
+Description=PiHub web page (runs nothing itself)
+After=network.target pihub-runner.service
+Wants=pihub-runner.service
+
+[Service]
+User=@USER@
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 @REPO@/bin/pihub --data @DATA@ serve --host 0.0.0.0 --port @PORT@
+Restart=on-failure
+RestartSec=5
+
+# The page only reads. It cannot gain rights (so no sudo), cannot write
+# anywhere, and of the home folders it sees only PiHub and its data.
+# The firewall decides who reaches the port; listening on all interfaces
+# avoids failing at boot while the network address is not there yet.
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+ProtectSystem=strict
+ProtectHome=tmpfs
+BindReadOnlyPaths=@REPO@ @DATA@
+PrivateTmp=yes
+# Own PID namespace: this service cannot see the runner process at all.
+PrivatePIDs=yes
+# Even with the same user, no reading or writing of another process's memory.
+SystemCallFilter=~ptrace process_vm_readv process_vm_writev
+# The password hash and the action log stay out of sight (the "-" lets it start if the folder is absent).
+InaccessiblePaths=-@DATA@/private
+# /proc shows only this service's own processes, and no system-wide files.
+ProtectProc=invisible
+ProcSubset=pid
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

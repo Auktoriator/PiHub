@@ -1,0 +1,11 @@
+# Areas group the cards on the map. Every card names one of them in `area`.
+
+[[areas]]
+id = "home"
+name = "Home"
+summary = "What runs the house"
+
+[[areas]]
+id = "network"
+name = "Network and access"
+summary = "Who gets in from where"

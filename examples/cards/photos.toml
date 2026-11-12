@@ -1,0 +1,45 @@
+schema = 1
+id = "photos"
+name = "Photo library"
+area = "home"
+summary = "The family photos, searchable in a browser"
+about = "Keeps the photos and shows them on every device at home. The original files stay in one folder on this machine; this service only reads them."
+containers = ["photoshelf"]
+needs = ["webserver", "backup-disk"]
+todo = "Switch the library to the new storage folder before the old disk is full."
+
+[[ports]]
+port = 2342
+reach = ["lan", "tailscale"]
+why = "The library itself. Reachable at home and over the private network, not from the internet."
+
+[[links]]
+label = "Open the library"
+port = 2342
+
+[[links]]
+label = "Manual"
+url = "https://docs.example.org/photoshelf"
+note = "Opens in a new tab"
+
+[[checks]]
+label = "Library answers"
+run = "curl -fsS http://localhost:2342/api/ping"
+expect = "pong"
+blind_spot = "whether searching and uploading work"
+
+[[steps]]
+text = "Look at what the container says about itself."
+run = "docker logs --tail 50 photoshelf"
+
+[[actions]]
+label = "Restart the library"
+run = "docker restart photoshelf"
+level = "change"
+timeout = 60
+effect = "Open pages stop for about half a minute."
+
+[[places]]
+path = "/srv/photos"
+what = "The original photos"
+caution = "Do not move or rename: the library finds the files by this path"
