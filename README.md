@@ -1,12 +1,61 @@
+<div align="center">
+
 # PiHub
 
-A command centre for a Raspberry Pi home server that explains itself.
+**A command centre for a Raspberry Pi home server that explains itself.**
 
-PiHub is for the person who owns a small home server and wants to understand
-it, also on a day when no AI assistant is at hand. Scripts scan the machine,
-Claude Code writes a short plain-language description of each service once,
-and from then on a small web page shows what runs, what is wrong, what that
-means and what to do next, without any AI.
+[![Tests](https://github.com/Auktoriator/PiHub/actions/workflows/test.yml/badge.svg)](https://github.com/Auktoriator/PiHub/actions/workflows/test.yml)
+[![Release](https://img.shields.io/github/v/release/Auktoriator/PiHub)](https://github.com/Auktoriator/PiHub/releases)
+![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
+![No dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
+[![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/map-dark.png">
+  <img src="docs/images/map.png" alt="The PiHub map: services grouped by area, each card coloured by its state, the selected card explained on the right" width="900">
+</picture>
+
+</div>
+
+You own a small home server. It runs a web server, a backup, a few
+containers, and you set most of it up months ago. PiHub tells you, in plain
+words, what runs there, what is wrong right now, what that means and what to
+do next. And it keeps working on the day no AI assistant is at hand.
+
+- **See it all at once.** Every service on one map, green, red or yellow, with lines for what depends on what.
+- **Understand what is wrong.** Each finding says what it means and the next command to run.
+- **Know who gets in.** Every open port next to who it is meant for and what the firewall really lets in.
+- **Act safely.** Run the commands written on the cards from the page, behind a password and a question that names the consequences.
+
+## A look inside
+
+| What is going on? | Security | History |
+|:---:|:---:|:---:|
+| [![Findings with their meaning and the next step](docs/images/findings.png)](docs/images/findings.png) | [![Ports, firewall and locked-out addresses](docs/images/security.png)](docs/images/security.png) | [![Temperature, load, memory and disks over 24 hours](docs/images/history.png)](docs/images/history.png) |
+| Findings, what they mean, what to do | Ports, firewall, locked-out addresses | Temperature, load, memory, disks |
+
+The screenshots use the [example cards](examples/) on an invented machine.
+The page works on a phone, in light and dark mode.
+
+## Get started
+
+On the Pi itself, in [Claude Code](https://claude.com/claude-code):
+
+```
+claude plugin marketplace add Auktoriator/PiHub
+claude plugin install pihub@pihub
+/pihub:setup
+```
+
+Claude Code looks at what is there, asks you what is unclear, writes one card
+per service, lets you review every command that could ever be run, and only
+sets up the services after your explicit yes. You choose the password
+yourself. Later, `/pihub:update` brings in new versions and describes new
+services.
+
+No Claude Code? See [Without Claude Code](#without-claude-code).
+
+---
 
 ## How it works
 
@@ -21,32 +70,10 @@ disagree, that disagreement is the finding: a service nobody described, or a
 port that should serve the home network and only listens on the machine
 itself.
 
-## Set up
-
-On the machine itself, in Claude Code:
-
-```
-claude plugin marketplace add Auktoriator/PiHub
-claude plugin install pihub@pihub
-/pihub:setup
-```
-
-Claude Code checks what is there, asks you what is unclear, scans, writes
-the cards, lets you review every command that could be run, and only with
-your explicit yes sets up the services. You set the password yourself. Later,
-`/pihub:update` brings in new versions and describes new services.
-
-## What you have afterwards
-
-A web page with seven views:
-
-- **Map**: all services by area, with traffic-light state and lines for what depends on what
-- **What is going on**: findings with meaning and next step, which you can silence with a reason
-- **Security**: every listening port, who it is meant for and what the firewall lets in, and who is locked out
-- **Storage**: what should be mounted and what is, with a mount button
-- **History**: temperature, load, memory and disk for 24 hours or 7 days, plus changes of state and run actions
-- **Files**: the places that matter and the commands for everyday file work
-- **Day to day**: links to all pages and the commands by area
+The page has seven views: **Map**, **What is going on?**, **Security**,
+**Storage** (what should be mounted and what is), **History** (24 hours or 7
+days), **Files** (the places that matter and everyday file commands) and
+**Day to day** (links to all pages and the commands by area).
 
 Logged in, you can run the actions written on the cards: `read` at once,
 `change` after a question that names the consequences, `copy` never (it is
@@ -66,6 +93,11 @@ only shown, to copy into a terminal).
 - Your inventory and cards describe your machine. They live in `~/pihub-data`,
   not in this repository.
 
+The scan is written so that no credential can reach the inventory: it does
+not call `docker inspect`, records process names but no command lines, and
+reads no file contents apart from a fixed set of nginx directives and the
+mount points in `/etc/fstab`.
+
 More in [SECURITY.md](SECURITY.md), including how to report a vulnerability.
 
 ## Requirements and limits
@@ -77,13 +109,6 @@ More in [SECURITY.md](SECURITY.md), including how to report a vulnerability.
   (firewall, blocked addresses) and are skipped without it.
 - **So far PiHub has been run on exactly one machine: a Raspberry Pi 5 with
   Debian 13.** Other setups are untested; expect rough edges.
-- The page has been tested without a browser (a smoke test with Node). Look
-  and feel on other devices is not covered.
-
-The scan is written so that no credential can reach the inventory: it does
-not call `docker inspect`, records process names but no command lines, and
-reads no file contents apart from a fixed set of nginx directives and the
-mount points in `/etc/fstab`.
 
 ## Without Claude Code
 
@@ -94,7 +119,8 @@ and [docs/writing-cards.md](docs/writing-cards.md), and run
 [systemd/README.md](systemd/README.md). Clone the repository to `~/PiHub`
 (the unit files expect the program there, but that can be changed).
 
-## Command line
+<details>
+<summary><b>Command line</b></summary>
 
 ```
 bin/pihub scan         read the machine, write the inventory (changes nothing)
@@ -111,6 +137,8 @@ bin/pihub show <id>    one card: what it is, checks, steps, commands
 `~/pihub-data`. The language is `language = "de"` or `"en"` in
 `<data>/settings.toml`. `collect` runs only the commands listed under
 `checks` on the cards.
+
+</details>
 
 ## Documents
 

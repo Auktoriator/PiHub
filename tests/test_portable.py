@@ -345,11 +345,11 @@ class NothingHardWired(unittest.TestCase):
 
 class Version(unittest.TestCase):
     def test_version(self):
-        self.assertEqual(__version__, "0.3.0")
+        self.assertEqual(__version__, "0.3.1")
         with contextlib.redirect_stdout(io.StringIO()) as out, self.assertRaises(SystemExit) as stop:
             cli.main(["--version"])
         self.assertEqual(stop.exception.code, 0)
-        self.assertIn("0.3.0", out.getvalue())
+        self.assertIn("0.3.1", out.getvalue())
 
 
 if __name__ == "__main__":

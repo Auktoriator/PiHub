@@ -1,6 +1,6 @@
 {
   "name": "pihub",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A command centre for a Raspberry Pi home server that explains itself. Scripts scan the machine, Claude Code writes one plain-language card per service once, and a small web page then shows the map, findings, security, storage and history without any AI.",
   "author": {
     "name": "Auktoriator",
