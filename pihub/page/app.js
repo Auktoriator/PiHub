@@ -78,9 +78,12 @@ function clock(ts, withDate) {
   return (withDate ? pad2(d.getDate()) + '.' + pad2(d.getMonth() + 1) + '. ' : '') + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
 }
 
+// A new tab starts at the top; picking a card on the same tab keeps the place.
 function go(tab, sel) {
+  const same = ui.tab === tab;
   ui.tab = tab;
   if (sel) ui.sel = sel;
+  if (same) { redraw(); return; }
   render();
   window.scrollTo(0, 0);
 }
