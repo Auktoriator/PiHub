@@ -4,3 +4,7 @@ __pycache__/
 # (or $PIHUB_DATA). These lines are a second guard, not the mechanism.
 /inventory.json
 /pihub-data/
+
+# Notes about the owner's own machine, never published.
+CLAUDE.local.md
+.DS_Store
