@@ -1,6 +1,6 @@
 # PiHub – Die Kommandozentrale
 
-Stand: Stufe 4 von 4 gebaut (Plugin mit den Skills „setup“ und „update“); noch offen: Test auf einem frischen Pi.
+Stand: Stufe 4 von 4 gebaut (Plugin mit den Skills „setup“ und „update“); noch offen: Test auf einem frischen Pi ([Issue #1](https://github.com/Auktoriator/PiHub/issues/1)).
 
 ## Wozu
 
@@ -113,7 +113,7 @@ Inventar und Karten beschreiben einen bestimmten Pi. Sie liegen in
    `docs/writing-cards.md`, `SECURITY.md` und ein Testlauf auf GitHub.
    `/pihub:update` ist mit installiertem Plugin gelaufen. Noch offen: ein
    Durchlauf von `/pihub:setup` auf einem frischen Pi, auf dem PiHub nie
-   lief.
+   lief ([Issue #1](https://github.com/Auktoriator/PiHub/issues/1)).
 
 ## Woher die Ideen kommen
 
